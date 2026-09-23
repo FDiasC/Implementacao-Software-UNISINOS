@@ -1,0 +1,69 @@
+
+Tipos referem-se aos tipos .NET usados nas entidades ([`src/GestaoReservas.Domain/Entities`](../../src/GestaoReservas.Domain/Entities)) e ao mapeamento físico configurado via Fluent API ([`src/GestaoReservas.Infrastructure/Data/Configurations`](../../src/GestaoReservas.Infrastructure/Data/Configurations)).
+
+## Usuario
+
+| Campo | Tipo | Tipo físico | Restrições |
+|---|---|---|---|
+| Id | `int` | INTEGER | PK, identity |
+| Nome | `string` | NVARCHAR(150) | NOT NULL |
+| Email | `string` | NVARCHAR(200) | NOT NULL, único (índice) |
+| Ativo | `bool` | BIT | NOT NULL, default `true` |
+
+## Categoria
+
+| Campo | Tipo | Tipo físico | Restrições |
+|---|---|---|---|
+| Id | `int` | INTEGER | PK, identity |
+| Nome | `string` | NVARCHAR(100) | NOT NULL |
+| Tipo | `enum TipoCategoria` (`Local`, `Recurso`) | NVARCHAR(20) | NOT NULL (armazenado como string) |
+| Ativo | `bool` | BIT | NOT NULL, default `true` |
+
+## Local
+
+| Campo | Tipo | Tipo físico | Restrições |
+|---|---|---|---|
+| Id | `int` | INTEGER | PK, identity |
+| Sala | `string` | NVARCHAR(100) | NOT NULL |
+| Predio | `string` | NVARCHAR(100) | NOT NULL |
+| Capacidade | `int` | INTEGER | NOT NULL |
+| Andar | `int` | INTEGER | NOT NULL |
+| PermiteRecursos | `bool` | BIT | NOT NULL, default `false` |
+| CategoriaId | `int` | INTEGER | NOT NULL, FK → `Categoria.Id` (`ON DELETE RESTRICT`) |
+| Ativo | `bool` | BIT | NOT NULL, default `true` |
+
+## Recurso
+
+| Campo | Tipo | Tipo físico | Restrições |
+|---|---|---|---|
+| Id | `int` | INTEGER | PK, identity |
+| Descricao | `string` | NVARCHAR(200) | NOT NULL |
+| NumeroPatrimonio | `string` | NVARCHAR(50) | NOT NULL, **único** (índice único) |
+| DiasMinimosReserva | `int` | INTEGER | NOT NULL |
+| DiasMaximosReserva | `int` | INTEGER | NOT NULL, CHECK (`DiasMaximosReserva >= DiasMinimosReserva`) |
+| CategoriaId | `int` | INTEGER | NOT NULL, FK → `Categoria.Id` (`ON DELETE RESTRICT`) |
+| Ativo | `bool` | BIT | NOT NULL, default `true` |
+
+## Reserva
+
+| Campo | Tipo | Tipo físico | Restrições |
+|---|---|---|---|
+| Id | `int` | INTEGER | PK, identity |
+| UsuarioId | `int` | INTEGER | NOT NULL, FK → `Usuario.Id` (`ON DELETE RESTRICT`) |
+| LocalId | `int?` | INTEGER | **NULLABLE**, FK → `Local.Id` (`ON DELETE RESTRICT`) — nulo quando a reserva contém apenas recursos |
+| DataInicial | `DateOnly` | DATE | NOT NULL |
+| HoraInicial | `TimeOnly` | TIME | NOT NULL |
+| DataFinal | `DateOnly` | DATE | NOT NULL, CHECK (fim > início, combinando data e hora) |
+| HoraFinal | `TimeOnly` | TIME | NOT NULL |
+| Ativo | `bool` | BIT | NOT NULL, default `true` — também representa o status Ativo/Inativo da reserva |
+
+Regra de escopo (Local e/ou Recursos) e regra de `PermiteRecursos` são invariantes de aplicação, ver modelo de entendidade relacionamento
+
+## ReservaRecurso (entidade associativa N:N)
+
+| Campo | Tipo (.NET) | Tipo físico | Restrições |
+|---|---|---|---|
+| ReservaId | `int` | INTEGER | PK (composta), FK → `Reserva.Id` (`ON DELETE CASCADE`) |
+| RecursoId | `int` | INTEGER | PK (composta), FK → `Recurso.Id` (`ON DELETE RESTRICT`) |
+
+Sem coluna de quantidade: cada linha representa a alocação de um item físico único (`Recurso`) a uma `Reserva`. Não possui flag `Ativo` — ver justificativa no item 5 das regras de negócio do README.md

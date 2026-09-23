@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/GestaoReservas.Domain/GestaoReservas.Domain.csproj" />
+    <Project Path="src/GestaoReservas.Infrastructure/GestaoReservas.Infrastructure.csproj" />
+  </Folder>
+</Solution>
