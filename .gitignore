@@ -1,0 +1,14 @@
+## .NET
+bin/
+obj/
+*.user
+
+## IDE
+.vs/
+.vscode/
+.idea/
+
+## SQLite 
+*.db
+*.sqlite
+*.sqlite3
