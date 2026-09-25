@@ -1,0 +1,28 @@
+@host = http://localhost:3000
+
+### Categorias
+POST {{host}}/api/categorias
+Content-Type: application/json
+
+{ "nome": "Auditórios", "tipo": "Local" }
+
+###
+GET {{host}}/api/categorias
+
+### Locais
+POST {{host}}/api/locais
+Content-Type: application/json
+
+{ "sala": "101", "predio": "Bloco A", "capacidade": 40, "andar": 1, "permiteRecursos": true, "categoriaId": 1 }
+
+###
+GET {{host}}/api/locais
+
+### Usuários
+POST {{host}}/api/usuarios
+Content-Type: application/json
+
+{ "nome": "Maria Silva", "email": "maria@exemplo.com" }
+
+###
+GET {{host}}/api/usuarios

@@ -10,7 +10,7 @@ public class RecursoConfiguration : IEntityTypeConfiguration<Recurso>
     {
         builder.ToTable("Recursos", t => t.HasCheckConstraint(
             "CK_Recurso_DiasMaximos_MaiorIgual_DiasMinimos",
-            "[DiasMaximosReserva] >= [DiasMinimosReserva]"));
+            "\"DiasMaximosReserva\" >= \"DiasMinimosReserva\""));
 
         builder.HasKey(r => r.Id);
 
