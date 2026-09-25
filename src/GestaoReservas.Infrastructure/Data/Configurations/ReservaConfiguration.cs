@@ -10,7 +10,7 @@ public class ReservaConfiguration : IEntityTypeConfiguration<Reserva>
     {
         builder.ToTable("Reservas", t => t.HasCheckConstraint(
             "CK_Reserva_DataFinal_MaiorIgual_DataInicial",
-            "[DataFinal] > [DataInicial] OR ([DataFinal] = [DataInicial] AND [HoraFinal] > [HoraInicial])"));
+            "\"DataFinal\" > \"DataInicial\" OR (\"DataFinal\" = \"DataInicial\" AND \"HoraFinal\" > \"HoraInicial\")"));
 
         builder.HasKey(r => r.Id);
 

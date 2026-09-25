@@ -8,7 +8,5 @@ obj/
 .vscode/
 .idea/
 
-## SQLite 
-*.db
-*.sqlite
-*.sqlite3
+## Segredos locais
+.env

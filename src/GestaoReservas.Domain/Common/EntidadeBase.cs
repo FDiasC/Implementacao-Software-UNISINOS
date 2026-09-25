@@ -7,6 +7,4 @@ public abstract class EntidadeBase
     public bool Ativo { get; set; } = true;
 
     public void Desativar() => Ativo = false;
-
-    public void Ativar() => Ativo = true;
 }
