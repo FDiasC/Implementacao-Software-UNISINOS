@@ -1,5 +1,5 @@
 using GestaoReservas.WebApi.Common.Exceptions;
-using GestaoReservas.WebApi.Dtos.Recursos;
+using GestaoReservas.Domain.Dtos.Recursos;
 using GestaoReservas.Domain.Providers;
 using GestaoReservas.Domain.Entities;
 using GestaoReservas.Domain.Enums;
@@ -19,13 +19,13 @@ public class RecursoHandler : IRecursoHandler
 
     public async Task<List<RecursoDto>> ListarAsync(bool apenasAtivos, CancellationToken ct)
     {
-        var recursos = await _recursoProvider.ListarAsync(apenasAtivos, ct);
+        var recursos = await _recursoProvider.ListarRecursosAsync(apenasAtivos, ct);
         return recursos.Select(ParaDto).ToList();
     }
 
     public async Task<RecursoDto> ObterPorIdAsync(int id, CancellationToken ct)
     {
-        var recurso = await _recursoProvider.ObterPorIdAsync(id, ct)
+        var recurso = await _recursoProvider.ObterRecursoPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Recurso), id);
 
         return ParaDto(recurso);
@@ -36,18 +36,20 @@ public class RecursoHandler : IRecursoHandler
         ValidarJanelaDeDias(dto.DiasMinimosReserva, dto.DiasMaximosReserva);
 
         var categoria = await ObterCategoriaValidaAsync(dto.CategoriaId, ct);
+        var numeroPatrimonio = dto.NumeroPatrimonio.Trim();
+        await ValidarNumeroPatrimonioUnicoAsync(numeroPatrimonio, null, ct);
 
         var recurso = new Recurso
         {
             Descricao = dto.Descricao.Trim(),
-            NumeroPatrimonio = dto.NumeroPatrimonio.Trim(),
+            NumeroPatrimonio = numeroPatrimonio,
             DiasMinimosReserva = dto.DiasMinimosReserva,
             DiasMaximosReserva = dto.DiasMaximosReserva,
             CategoriaId = categoria.Id,
             Categoria = categoria
         };
 
-        await _recursoProvider.AdicionarAsync(recurso, ct);
+        await _recursoProvider.AdicionarRecursoAsync(recurso, ct);
         await _recursoProvider.SalvarAlteracoesAsync(ct);
 
         return ParaDto(recurso);
@@ -55,15 +57,17 @@ public class RecursoHandler : IRecursoHandler
 
     public async Task<RecursoDto> AtualizarAsync(int id, AtualizarRecursoDto dto, CancellationToken ct)
     {
-        var recurso = await _recursoProvider.ObterPorIdAsync(id, ct)
+        var recurso = await _recursoProvider.ObterRecursoPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Recurso), id);
 
         ValidarJanelaDeDias(dto.DiasMinimosReserva, dto.DiasMaximosReserva);
 
         var categoria = await ObterCategoriaValidaAsync(dto.CategoriaId, ct);
+        var numeroPatrimonio = dto.NumeroPatrimonio.Trim();
+        await ValidarNumeroPatrimonioUnicoAsync(numeroPatrimonio, id, ct);
 
         recurso.Descricao = dto.Descricao.Trim();
-        recurso.NumeroPatrimonio = dto.NumeroPatrimonio.Trim();
+        recurso.NumeroPatrimonio = numeroPatrimonio;
         recurso.DiasMinimosReserva = dto.DiasMinimosReserva;
         recurso.DiasMaximosReserva = dto.DiasMaximosReserva;
         recurso.CategoriaId = categoria.Id;
@@ -76,7 +80,7 @@ public class RecursoHandler : IRecursoHandler
 
     public async Task DesativarAsync(int id, CancellationToken ct)
     {
-        var recurso = await _recursoProvider.ObterPorIdAsync(id, ct)
+        var recurso = await _recursoProvider.ObterRecursoPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Recurso), id);
 
         if (await _recursoProvider.PossuiReservasAtivasAsync(id, ct))
@@ -90,6 +94,15 @@ public class RecursoHandler : IRecursoHandler
         await _recursoProvider.SalvarAlteracoesAsync(ct);
     }
 
+    private async Task ValidarNumeroPatrimonioUnicoAsync(string numeroPatrimonio, int? idParaIgnorar, CancellationToken ct)
+    {
+        // Checagem prévia: evita o INSERT que falharia no índice único e "queimaria" um valor da sequência de ids.
+        if (await _recursoProvider.ExisteComNumeroPatrimonioAsync(numeroPatrimonio, idParaIgnorar, ct))
+        {
+            throw new ConflitoException($"Já existe um recurso com o número de patrimônio '{numeroPatrimonio}'.");
+        }
+    }
+
     private static void ValidarJanelaDeDias(int diasMinimos, int diasMaximos)
     {
         if (diasMaximos < diasMinimos)
@@ -100,7 +113,7 @@ public class RecursoHandler : IRecursoHandler
 
     private async Task<Categoria> ObterCategoriaValidaAsync(int categoriaId, CancellationToken ct)
     {
-        var categoria = await _categoriaProvider.ObterPorIdAsync(categoriaId, ct)
+        var categoria = await _categoriaProvider.ObterCategoriaPorIdAsync(categoriaId, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Categoria), categoriaId);
 
         if (categoria.Tipo != TipoCategoria.Recurso)

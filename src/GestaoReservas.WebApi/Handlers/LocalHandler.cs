@@ -1,5 +1,5 @@
 using GestaoReservas.WebApi.Common.Exceptions;
-using GestaoReservas.WebApi.Dtos.Locais;
+using GestaoReservas.Domain.Dtos.Locais;
 using GestaoReservas.Domain.Providers;
 using GestaoReservas.Domain.Entities;
 using GestaoReservas.Domain.Enums;
@@ -19,13 +19,13 @@ public class LocalHandler : ILocalHandler
 
     public async Task<List<LocalDto>> ListarAsync(bool apenasAtivos, CancellationToken ct)
     {
-        var locais = await _localProvider.ListarAsync(apenasAtivos, ct);
+        var locais = await _localProvider.ListarLocaisAsync(apenasAtivos, ct);
         return locais.Select(ParaDto).ToList();
     }
 
     public async Task<LocalDto> ObterPorIdAsync(int id, CancellationToken ct)
     {
-        var local = await _localProvider.ObterPorIdAsync(id, ct)
+        var local = await _localProvider.ObterLocalPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Local), id);
 
         return ParaDto(local);
@@ -46,7 +46,7 @@ public class LocalHandler : ILocalHandler
             Categoria = categoria
         };
 
-        await _localProvider.AdicionarAsync(local, ct);
+        await _localProvider.AdicionarLocalAsync(local, ct);
         await _localProvider.SalvarAlteracoesAsync(ct);
 
         return ParaDto(local);
@@ -54,7 +54,7 @@ public class LocalHandler : ILocalHandler
 
     public async Task<LocalDto> AtualizarAsync(int id, AtualizarLocalDto dto, CancellationToken ct)
     {
-        var local = await _localProvider.ObterPorIdAsync(id, ct)
+        var local = await _localProvider.ObterLocalPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Local), id);
 
         var categoria = await ObterCategoriaValidaAsync(dto.CategoriaId, ct);
@@ -74,7 +74,7 @@ public class LocalHandler : ILocalHandler
 
     public async Task DesativarAsync(int id, CancellationToken ct)
     {
-        var local = await _localProvider.ObterPorIdAsync(id, ct)
+        var local = await _localProvider.ObterLocalPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Local), id);
 
         if (await _localProvider.PossuiReservasAtivasAsync(id, ct))
@@ -90,7 +90,7 @@ public class LocalHandler : ILocalHandler
 
     private async Task<Categoria> ObterCategoriaValidaAsync(int categoriaId, CancellationToken ct)
     {
-        var categoria = await _categoriaProvider.ObterPorIdAsync(categoriaId, ct)
+        var categoria = await _categoriaProvider.ObterCategoriaPorIdAsync(categoriaId, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Categoria), categoriaId);
 
         if (categoria.Tipo != TipoCategoria.Local)

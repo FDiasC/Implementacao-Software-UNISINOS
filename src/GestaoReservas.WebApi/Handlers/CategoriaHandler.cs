@@ -1,5 +1,5 @@
 using GestaoReservas.WebApi.Common.Exceptions;
-using GestaoReservas.WebApi.Dtos.Categorias;
+using GestaoReservas.Domain.Dtos.Categorias;
 using GestaoReservas.Domain.Providers;
 using GestaoReservas.Domain.Entities;
 
@@ -16,13 +16,13 @@ public class CategoriaHandler : ICategoriaHandler
 
     public async Task<List<CategoriaDto>> ListarAsync(bool apenasAtivas, CancellationToken ct)
     {
-        var categorias = await _provider.ListarAsync(apenasAtivas, ct);
+        var categorias = await _provider.ListarCategoriasAsync(apenasAtivas, ct);
         return categorias.Select(ParaDto).OrderBy(c=>c.Id).ToList();
     }
 
     public async Task<CategoriaDto> ObterPorIdAsync(int id, CancellationToken ct)
     {
-        var categoria = await _provider.ObterPorIdAsync(id, ct)
+        var categoria = await _provider.ObterCategoriaPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Categoria), id);
 
         return ParaDto(categoria);
@@ -36,7 +36,7 @@ public class CategoriaHandler : ICategoriaHandler
             Tipo = dto.Tipo
         };
 
-        await _provider.AdicionarAsync(categoria, ct);
+        await _provider.AdicionarCategoriaAsync(categoria, ct);
         await _provider.SalvarAlteracoesAsync(ct);
 
         return ParaDto(categoria);
@@ -44,7 +44,7 @@ public class CategoriaHandler : ICategoriaHandler
 
     public async Task<CategoriaDto> AtualizarAsync(int id, AtualizarCategoriaDto dto, CancellationToken ct)
     {
-        var categoria = await _provider.ObterPorIdAsync(id, ct)
+        var categoria = await _provider.ObterCategoriaPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Categoria), id);
 
         if (dto.Tipo != categoria.Tipo && await _provider.PossuiVinculosAsync(id, apenasAtivos: false, ct))
@@ -63,7 +63,7 @@ public class CategoriaHandler : ICategoriaHandler
 
     public async Task DesativarAsync(int id, CancellationToken ct)
     {
-        var categoria = await _provider.ObterPorIdAsync(id, ct)
+        var categoria = await _provider.ObterCategoriaPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Categoria), id);
 
         if (await _provider.PossuiVinculosAsync(id, apenasAtivos: true, ct))

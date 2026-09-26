@@ -27,6 +27,10 @@ public class ExceptionHandlingMiddleware
         {
             await EscreverProblemaAsync(context, StatusCodes.Status404NotFound, ex.Message);
         }
+        catch (ConflitoException ex)
+        {
+            await EscreverProblemaAsync(context, StatusCodes.Status409Conflict, ex.Message);
+        }
         catch (RegraDeNegocioException ex)
         {
             await EscreverProblemaAsync(context, StatusCodes.Status400BadRequest, ex.Message);

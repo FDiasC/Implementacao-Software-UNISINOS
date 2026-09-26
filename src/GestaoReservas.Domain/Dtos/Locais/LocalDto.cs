@@ -1,4 +1,4 @@
-namespace GestaoReservas.WebApi.Dtos.Locais;
+namespace GestaoReservas.Domain.Dtos.Locais;
 
 /// <summary>Dados de um local retornados pela API.</summary>
 /// <param name="Id">Identificador do local.</param>

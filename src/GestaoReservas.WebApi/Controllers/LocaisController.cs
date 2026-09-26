@@ -1,4 +1,4 @@
-using GestaoReservas.WebApi.Dtos.Locais;
+using GestaoReservas.Domain.Dtos.Locais;
 using GestaoReservas.WebApi.Handlers;
 using Microsoft.AspNetCore.Mvc;
 

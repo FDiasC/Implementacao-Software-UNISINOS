@@ -14,7 +14,7 @@ public class CategoriaProvider : ICategoriaProvider
         _context = context;
     }
 
-    public async Task<List<Categoria>> ListarAsync(bool apenasAtivas, CancellationToken ct)
+    public async Task<List<Categoria>> ListarCategoriasAsync(bool apenasAtivas, CancellationToken ct)
     {
         var query = _context.Categorias.AsNoTracking();
 
@@ -26,14 +26,14 @@ public class CategoriaProvider : ICategoriaProvider
         return await query.ToListAsync(ct);
     }
 
-    public Task<Categoria?> ObterPorIdAsync(int id, CancellationToken ct) =>
+    public Task<Categoria?> ObterCategoriaPorIdAsync(int id, CancellationToken ct) =>
         _context.Categorias.FirstOrDefaultAsync(c => c.Id == id, ct);
 
     public async Task<bool> PossuiVinculosAsync(int categoriaId, bool apenasAtivos, CancellationToken ct) =>
         await _context.Locais.AnyAsync(l => l.CategoriaId == categoriaId && (!apenasAtivos || l.Ativo), ct)
         || await _context.Recursos.AnyAsync(r => r.CategoriaId == categoriaId && (!apenasAtivos || r.Ativo), ct);
 
-    public async Task AdicionarAsync(Categoria categoria, CancellationToken ct) =>
+    public async Task AdicionarCategoriaAsync(Categoria categoria, CancellationToken ct) =>
         await _context.Categorias.AddAsync(categoria, ct);
 
     public Task SalvarAlteracoesAsync(CancellationToken ct) =>

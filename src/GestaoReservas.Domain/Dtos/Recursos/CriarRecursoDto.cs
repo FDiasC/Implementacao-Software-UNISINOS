@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GestaoReservas.WebApi.Dtos.Recursos;
+namespace GestaoReservas.Domain.Dtos.Recursos;
 
 /// <summary>Dados para cadastrar um recurso.</summary>
 /// <param name="NumeroPatrimonio">Número de patrimônio, único no sistema (até 50 caracteres).</param>
@@ -10,7 +10,7 @@ namespace GestaoReservas.WebApi.Dtos.Recursos;
 /// <param name="CategoriaId">Categoria existente, ativa e do tipo Recurso.</param>
 public record CriarRecursoDto(
     [Required, MaxLength(50)] string NumeroPatrimonio,
-    [Required, MaxLength(100)] string Descricao,
+    [Required, MaxLength(200)] string Descricao,
     [Range(1, int.MaxValue)] int DiasMinimosReserva,
     [Range(1, int.MaxValue)] int DiasMaximosReserva,
     [Range(1, int.MaxValue)] int CategoriaId);
