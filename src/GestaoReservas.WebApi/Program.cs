@@ -20,11 +20,13 @@ builder.Services.AddScoped<IUsuarioProvider, UsuarioProvider>();
 builder.Services.AddScoped<ICategoriaProvider, CategoriaProvider>();
 builder.Services.AddScoped<ILocalProvider, LocalProvider>();
 builder.Services.AddScoped<IRecursoProvider, RecursoProvider>();
+builder.Services.AddScoped<IReservaProvider, ReservaProvider>();
 
 builder.Services.AddScoped<IUsuarioHandler, UsuarioHandler>();
 builder.Services.AddScoped<ICategoriaHandler, CategoriaHandler>();
 builder.Services.AddScoped<ILocalHandler, LocalHandler>();
 builder.Services.AddScoped<IRecursoHandler, RecursoHandler>();
+builder.Services.AddScoped<IReservaHandler, ReservaHandler>();
 
 var app = builder.Build();
 

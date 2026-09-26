@@ -1,4 +1,4 @@
-using GestaoReservas.WebApi.Dtos.Categorias;
+using GestaoReservas.Domain.Dtos.Categorias;
 using GestaoReservas.WebApi.Handlers;
 using Microsoft.AspNetCore.Mvc;
 

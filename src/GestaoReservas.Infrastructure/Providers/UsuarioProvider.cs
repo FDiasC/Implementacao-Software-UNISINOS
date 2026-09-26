@@ -14,7 +14,7 @@ public class UsuarioProvider : IUsuarioProvider
         _context = context;
     }
 
-    public async Task<List<Usuario>> ListarAsync(bool apenasAtivos, CancellationToken ct)
+    public async Task<List<Usuario>> ListarUsuariosAsync(bool apenasAtivos, CancellationToken ct)
     {
         var query = _context.Usuarios.AsNoTracking();
 
@@ -26,13 +26,13 @@ public class UsuarioProvider : IUsuarioProvider
         return await query.OrderBy(u => u.Id).ToListAsync(ct);
     }
 
-    public Task<Usuario?> ObterPorIdAsync(int id, CancellationToken ct) =>
+    public Task<Usuario?> ObterUsuarioPorIdAsync(int id, CancellationToken ct) =>
         _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id, ct);
 
     public Task<bool> ExisteComEmailAsync(string email, int? idParaIgnorar, CancellationToken ct) =>
         _context.Usuarios.AnyAsync(u => u.Email.ToLower() == email.ToLower() && (idParaIgnorar == null || u.Id != idParaIgnorar), ct);
 
-    public async Task AdicionarAsync(Usuario usuario, CancellationToken ct) =>
+    public async Task AdicionarUsuarioAsync(Usuario usuario, CancellationToken ct) =>
         await _context.Usuarios.AddAsync(usuario, ct);
 
     public Task SalvarAlteracoesAsync(CancellationToken ct) =>

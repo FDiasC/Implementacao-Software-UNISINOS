@@ -13,7 +13,7 @@ public class RecursoProvider : IRecursoProvider
         _context = context;
     }
 
-    public async Task<List<Recurso>> ListarAsync(bool apenasAtivos, CancellationToken ct)
+    public async Task<List<Recurso>> ListarRecursosAsync(bool apenasAtivos, CancellationToken ct)
     {
         IQueryable<Recurso> query = _context.Recursos.AsNoTracking().Include(r => r.Categoria);
 
@@ -25,13 +25,16 @@ public class RecursoProvider : IRecursoProvider
         return await query.OrderBy(r => r.NumeroPatrimonio).ToListAsync(ct);
     }
 
-    public Task<Recurso?> ObterPorIdAsync(int id, CancellationToken ct) =>
+    public Task<Recurso?> ObterRecursoPorIdAsync(int id, CancellationToken ct) =>
         _context.Recursos.Include(r => r.Categoria).FirstOrDefaultAsync(r => r.Id == id, ct);
 
     public Task<bool> PossuiReservasAtivasAsync(int recursoId, CancellationToken ct) =>
         _context.Reservas.AnyAsync(r => r.ReservaRecursos.Any(rr => rr.RecursoId == recursoId) && r.Ativo, ct);
 
-    public async Task AdicionarAsync(Recurso recurso, CancellationToken ct) =>
+    public Task<bool> ExisteComNumeroPatrimonioAsync(string numeroPatrimonio, int? idParaIgnorar, CancellationToken ct) =>
+        _context.Recursos.AnyAsync(r => r.NumeroPatrimonio == numeroPatrimonio && (idParaIgnorar == null || r.Id != idParaIgnorar), ct);
+
+    public async Task AdicionarRecursoAsync(Recurso recurso, CancellationToken ct) =>
         await _context.Recursos.AddAsync(recurso, ct);
 
     public Task SalvarAlteracoesAsync(CancellationToken ct) =>

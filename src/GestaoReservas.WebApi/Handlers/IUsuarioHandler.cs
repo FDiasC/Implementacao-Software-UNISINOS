@@ -1,4 +1,4 @@
-using GestaoReservas.WebApi.Dtos.Usuarios;
+using GestaoReservas.Domain.Dtos.Usuarios;
 
 namespace GestaoReservas.WebApi.Handlers;
 

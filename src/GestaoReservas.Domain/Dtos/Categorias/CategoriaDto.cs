@@ -1,4 +1,4 @@
-namespace GestaoReservas.WebApi.Dtos.Categorias;
+namespace GestaoReservas.Domain.Dtos.Categorias;
 
 /// <summary>Dados de uma categoria retornados pela API.</summary>
 /// <param name="Id">Identificador da categoria.</param>

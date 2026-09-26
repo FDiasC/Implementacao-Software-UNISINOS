@@ -1,4 +1,4 @@
-namespace GestaoReservas.WebApi.Dtos.Recursos;
+namespace GestaoReservas.Domain.Dtos.Recursos;
 
 /// <summary>Dados de um recurso retornados pela API.</summary>
 /// <param name="Id">Identificador do recurso.</param>

@@ -1,4 +1,4 @@
-namespace GestaoReservas.WebApi.Dtos.Usuarios;
+namespace GestaoReservas.Domain.Dtos.Usuarios;
 
 /// <summary>Dados de um usuário retornados pela API.</summary>
 /// <param name="Id">Identificador do usuário.</param>

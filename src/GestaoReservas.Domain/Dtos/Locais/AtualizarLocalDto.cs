@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace GestaoReservas.WebApi.Dtos.Locais;
+namespace GestaoReservas.Domain.Dtos.Locais;
 
 /// <summary>Dados para atualizar um local existente.</summary>
 /// <param name="Sala">Identificação da sala (até 100 caracteres).</param>

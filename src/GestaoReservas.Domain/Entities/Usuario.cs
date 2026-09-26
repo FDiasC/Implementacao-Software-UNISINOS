@@ -8,5 +8,7 @@ public class Usuario : EntidadeBase
 
     public string Email { get; set; } = string.Empty;
 
+    public string Senha { get; set; } = string.Empty;
+
     public ICollection<Reserva> Reservas { get; set; } = new List<Reserva>();
 }

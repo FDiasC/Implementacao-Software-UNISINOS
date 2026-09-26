@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using GestaoReservas.Domain.Enums;
 
-namespace GestaoReservas.WebApi.Dtos.Categorias;
+namespace GestaoReservas.Domain.Dtos.Categorias;
 
 /// <summary>Dados para atualizar uma categoria existente.</summary>
 /// <param name="Nome">Nome da categoria (até 100 caracteres).</param>
