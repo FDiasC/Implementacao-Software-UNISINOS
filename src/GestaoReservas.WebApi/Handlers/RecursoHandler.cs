@@ -33,6 +33,8 @@ public class RecursoHandler : IRecursoHandler
 
     public async Task<RecursoDto> CriarAsync(CriarRecursoDto dto, CancellationToken ct)
     {
+        ValidarJanelaDeDias(dto.DiasMinimosReserva, dto.DiasMaximosReserva);
+
         var categoria = await ObterCategoriaValidaAsync(dto.CategoriaId, ct);
 
         var recurso = new Recurso
@@ -55,6 +57,8 @@ public class RecursoHandler : IRecursoHandler
     {
         var recurso = await _recursoProvider.ObterPorIdAsync(id, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Recurso), id);
+
+        ValidarJanelaDeDias(dto.DiasMinimosReserva, dto.DiasMaximosReserva);
 
         var categoria = await ObterCategoriaValidaAsync(dto.CategoriaId, ct);
 
@@ -86,15 +90,23 @@ public class RecursoHandler : IRecursoHandler
         await _recursoProvider.SalvarAlteracoesAsync(ct);
     }
 
+    private static void ValidarJanelaDeDias(int diasMinimos, int diasMaximos)
+    {
+        if (diasMaximos < diasMinimos)
+        {
+            throw new RegraDeNegocioException("DiasMaximosReserva não pode ser menor que DiasMinimosReserva.");
+        }
+    }
+
     private async Task<Categoria> ObterCategoriaValidaAsync(int categoriaId, CancellationToken ct)
     {
         var categoria = await _categoriaProvider.ObterPorIdAsync(categoriaId, ct)
             ?? throw new EntidadeNaoEncontradaException(nameof(Categoria), categoriaId);
 
-        if (categoria.Tipo != TipoCategoria.Local)
+        if (categoria.Tipo != TipoCategoria.Recurso)
         {
             throw new RegraDeNegocioException(
-                $"A categoria '{categoria.Nome}' não é do tipo '{TipoCategoria.Local}' e não pode ser usada em um Local.");
+                $"A categoria '{categoria.Nome}' não é do tipo '{TipoCategoria.Recurso}' e não pode ser usada em um Recurso.");
         }
 
         if (!categoria.Ativo)
