@@ -17,7 +17,7 @@ public class CategoriaHandler : ICategoriaHandler
     public async Task<List<CategoriaDto>> ListarAsync(bool apenasAtivas, CancellationToken ct)
     {
         var categorias = await _provider.ListarAsync(apenasAtivas, ct);
-        return categorias.Select(ParaDto).ToList();
+        return categorias.Select(ParaDto).OrderBy(c=>c.Id).ToList();
     }
 
     public async Task<CategoriaDto> ObterPorIdAsync(int id, CancellationToken ct)

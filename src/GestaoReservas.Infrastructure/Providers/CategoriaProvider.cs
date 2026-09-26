@@ -23,7 +23,7 @@ public class CategoriaProvider : ICategoriaProvider
             query = query.Where(c => c.Ativo);
         }
 
-        return await query.OrderBy(c => c.Id).ToListAsync(ct);
+        return await query.ToListAsync(ct);
     }
 
     public Task<Categoria?> ObterPorIdAsync(int id, CancellationToken ct) =>
