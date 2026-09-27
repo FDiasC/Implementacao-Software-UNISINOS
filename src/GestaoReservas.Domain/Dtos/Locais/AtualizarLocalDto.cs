@@ -10,9 +10,16 @@ namespace GestaoReservas.Domain.Dtos.Locais;
 /// <param name="PermiteRecursos">Se reservas deste local podem incluir recursos.</param>
 /// <param name="CategoriaId">Categoria existente, ativa e do tipo Local.</param>
 public record AtualizarLocalDto(
-    [Required, MaxLength(100)] string Sala,
-    [Required, MaxLength(100)] string Predio,
-    [Range(1, int.MaxValue)] int Capacidade,
-    [Range(0, int.MaxValue)] int Andar,
+    [Required(ErrorMessage = "O campo {0} é obrigatório.")]
+    [MaxLength(100, ErrorMessage = "O campo {0} deve ter no máximo {1} caracteres.")]
+    string Sala,
+    [Required(ErrorMessage = "O campo {0} é obrigatório.")]
+    [MaxLength(100, ErrorMessage = "O campo {0} deve ter no máximo {1} caracteres.")]
+    string Predio,
+    [Range(1, int.MaxValue, ErrorMessage = "O campo {0} deve ser maior ou igual a {1}.")]
+    int Capacidade,
+    [Range(0, int.MaxValue, ErrorMessage = "O campo {0} deve ser maior ou igual a {1}.")]
+    int Andar,
     bool PermiteRecursos,
-    [Range(1, int.MaxValue)] int CategoriaId);
+    [Range(1, int.MaxValue, ErrorMessage = "O campo {0} deve ser um id válido.")]
+    int CategoriaId);

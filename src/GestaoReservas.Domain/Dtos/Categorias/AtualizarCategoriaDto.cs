@@ -7,5 +7,8 @@ namespace GestaoReservas.Domain.Dtos.Categorias;
 /// <param name="Nome">Nome da categoria (até 100 caracteres).</param>
 /// <param name="Tipo">Local ou Recurso. Só pode mudar se nenhum local/recurso usar a categoria.</param>
 public record AtualizarCategoriaDto(
-    [Required, MaxLength(100)] string Nome,
-    [EnumDataType(typeof(TipoCategoria))] TipoCategoria Tipo);
+    [Required(ErrorMessage = "O campo {0} é obrigatório.")]
+    [MaxLength(100, ErrorMessage = "O campo {0} deve ter no máximo {1} caracteres.")]
+    string Nome,
+    [EnumDataType(typeof(TipoCategoria), ErrorMessage = "O campo {0} deve ser \"Local\" ou \"Recurso\".")]
+    TipoCategoria Tipo);
