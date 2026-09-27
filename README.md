@@ -79,6 +79,7 @@ Outras regras:
 | `GestaoReservas.Domain` | Entidades, enums, DTOs (`Dtos/`) e interfaces dos providers (`I*Provider`). |
 | `GestaoReservas.Infrastructure` | `AppDbContext`, mapeamento Fluent API, implementação dos providers e migrations. |
 | `GestaoReservas.WebApi` | Controllers, handlers (regras de negócio), tratamento de erros e `Program.cs`. |
+| `GestaoReservas.ConsoleClient` | Cliente em terminal para a apresentação (ver seção 4). Reaproveita as DTOs de `GestaoReservas.Domain`. |
 
 ### 3.3 Configurar a conexão com o PostgreSQL
 
@@ -129,3 +130,21 @@ dotnet ef migrations add NomeDaMudanca --project src/GestaoReservas.Infrastructu
 | `Failed to connect to 127.0.0.1:5432` | O serviço do PostgreSQL não está rodando ou usa outra porta. |
 | `address already in use` na porta 3000 | Outra instância da API ainda está aberta. Termine o processo e tente novamente. |
 | `42501: permission denied to create database` | O usuário configurado não pode criar bancos. Use o `postgres` ou crie o banco `gestao_reservas` manualmente. |
+
+## 4. Cliente de terminal (`GestaoReservas.ConsoleClient`)
+
+Aplicação de console que consome a API via HTTP, atendendo ao requisito do trabalho de uma "aplicação em terminal" com inclusão, consulta, alteração, exclusão e navegação por menus. É intencionalmente simples (sem injeção de dependência, configuração externa ou testes) porque será **substituída por um frontend web** mais adiante — o objetivo aqui é só viabilizar a apresentação ao professor com Usuários, Categorias, Locais, Recursos e Reservas.
+
+Com a API já rodando (seção 3.4), em outro terminal:
+
+```bash
+dotnet run --project src/GestaoReservas.ConsoleClient
+```
+
+Por padrão aponta para `http://localhost:3000/`. Para apontar para outro endereço, defina a variável de ambiente antes de rodar:
+
+```bash
+API_BASE_URL=http://localhost:3000/ dotnet run --project src/GestaoReservas.ConsoleClient
+```
+
+Navegação: um menu principal lista as 5 entidades; cada uma abre um submenu com Listar, Buscar por id, Cadastrar, Atualizar e Desativar/Cancelar (opção `0` sempre volta um nível). Erros da API (validação, regra de negócio, conflito, "não encontrado") aparecem como mensagem de texto, sem derrubar o programa — a exceção `ApiException` centraliza esse tratamento em [ApiClient.cs](src/GestaoReservas.ConsoleClient/ApiClient.cs). Datas usam o formato `dd/MM/yyyy` e horas `HH:mm`.
