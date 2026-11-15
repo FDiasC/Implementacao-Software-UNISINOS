@@ -3,7 +3,7 @@ using GestaoReservas.ConsoleClient.Menus;
 
 Console.OutputEncoding = System.Text.Encoding.UTF8;
 
-var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "http://localhost:3000/";
+var baseUrl = Environment.GetEnvironmentVariable("API_BASE_URL") ?? "http://localhost:5001/";
 var api = new ApiClient(baseUrl);
 
 while (true)

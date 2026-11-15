@@ -109,7 +109,7 @@ dotnet user-secrets list --project src/GestaoReservas.WebApi
 dotnet run --project src/GestaoReservas.WebApi --launch-profile http
 ```
 
-A API sobe em `http://localhost:3000` e o navegador abre direto no Swagger (`/swagger`). Na primeira execução, as migrations são aplicadas automaticamente: o banco `gestao_reservas` e todas as tabelas são criadas, então não é preciso criar nada manualmente no PostgreSQL.
+A API sobe em `http://localhost:5001` e o navegador abre direto no Swagger (`/swagger`). Na primeira execução, as migrations são aplicadas automaticamente: o banco `gestao_reservas` e todas as tabelas são criadas, então não é preciso criar nada manualmente no PostgreSQL.
 
 Os dados podem ser consultados pelo pgAdmin ou pelo `psql` (ex.: `SELECT * FROM "Usuarios";`). Os nomes das tabelas e colunas estão em PascalCase e precisam de aspas duplas no SQL.
 
@@ -128,7 +128,7 @@ dotnet ef migrations add NomeDaMudanca --project src/GestaoReservas.Infrastructu
 |---|---|
 | `28P01: password authentication failed` | Senha errada no User Secrets. Rode de novo o comando da seção 3.3. |
 | `Failed to connect to 127.0.0.1:5432` | O serviço do PostgreSQL não está rodando ou usa outra porta. |
-| `address already in use` na porta 3000 | Outra instância da API ainda está aberta. Termine o processo e tente novamente. |
+| `address already in use` na porta 5001 | Outra instância da API ainda está aberta. Termine o processo e tente novamente. |
 | `42501: permission denied to create database` | O usuário configurado não pode criar bancos. Use o `postgres` ou crie o banco `gestao_reservas` manualmente. |
 
 ## 4. Cliente de terminal (`GestaoReservas.ConsoleClient`)
@@ -141,10 +141,10 @@ Com a API já rodando (seção 3.4), em outro terminal:
 dotnet run --project src/GestaoReservas.ConsoleClient
 ```
 
-Por padrão aponta para `http://localhost:3000/`. Para apontar para outro endereço, defina a variável de ambiente antes de rodar:
+Por padrão aponta para `http://localhost:5001/`. Para apontar para outro endereço, defina a variável de ambiente antes de rodar:
 
 ```bash
-API_BASE_URL=http://localhost:3000/ dotnet run --project src/GestaoReservas.ConsoleClient
+API_BASE_URL=http://localhost:5001/ dotnet run --project src/GestaoReservas.ConsoleClient
 ```
 
 Navegação: um menu principal lista as 5 entidades; cada uma abre um submenu com Listar, Buscar por id, Cadastrar, Atualizar e Desativar/Cancelar (opção `0` sempre volta um nível). Erros da API (validação, regra de negócio, conflito, "não encontrado") aparecem como mensagem de texto, sem derrubar o programa — a exceção `ApiException` centraliza esse tratamento em [ApiClient.cs](src/GestaoReservas.ConsoleClient/ApiClient.cs). Datas usam o formato `dd/MM/yyyy` e horas `HH:mm`.
