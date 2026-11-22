@@ -23,7 +23,7 @@ export function BotaoTema() {
     try {
       localStorage.setItem(CHAVE, tema)
     } catch {
-      // ignora
+      // Sem armazenamento disponível: o tema vale só até recarregar.
     }
   }, [tema])
 

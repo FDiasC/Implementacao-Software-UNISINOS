@@ -2,8 +2,7 @@
 Sistema de gestão de reservas de locais e recursos, desenvolvido para a cadeira de Implementação de Software da UNISINOS. É composto por:
 
 - **API REST** em .NET 10 (C#) com Entity Framework Core e PostgreSQL, protegida por **token JWT**;
-- **Frontend web** em React + TypeScript (Vite), com telas de login e cadastro completo de todas as entidades;
-- **Cliente de terminal** em .NET, mantido como alternativa de linha de comando.
+- **Frontend web** em React + TypeScript (Vite), com telas de login e cadastro completo de todas as entidades.
 
 Documentação complementar:
 
@@ -15,7 +14,7 @@ Documentação complementar:
 ## 1. Regras de negócio e de domínio
 1. **Escopo da reserva**: uma `Reserva` deve conter pelo menos um `Local` OU pelo menos um `Recurso` (nunca nenhum dos dois). Essa regra cruza duas tabelas (`Reserva` e `ReservaRecurso`) e não pode ser expressa como uma *constraint* de coluna única; é representada no domínio pela propriedade calculada `Reserva.TemEscopoValido` e é validada no `ReservaHandler` (ver seção 2.1).
 2. **`PermiteRecursos`**: quando `false`, o `Local` vinculado a uma reserva não pode ter recursos associados na mesma reserva. Regra de aplicação, validada no `ReservaHandler`.
-3. **Item físico único**: `Recurso.NumeroPatrimonio` é único no sistema (índice único). O `RecursoHandler` checa a duplicidade antes de gravar (409 com mensagem clara). Lacunas nos ids são normais: no PostgreSQL a sequência de identity não é revertida quando um INSERT falha (ex.: corrida entre duas requisições). Não existe atributo de quantidade em `Recurso` nem em `ReservaRecurso`.
+3. **Item físico único**: `Recurso.NumeroPatrimonio` é único no sistema (índice único). O `RecursoHandler` checa a duplicidade antes de gravar (409 com mensagem clara). Não existe atributo de quantidade em `Recurso` nem em `ReservaRecurso`.
 4. **Janela de dias do recurso**: `DiasMinimosReserva` e `DiasMaximosReserva` definem os limites de duração (em dias) permitidos para reservar aquele recurso; a duração efetiva é obtida do cruzamento de `Reserva.DataInicial/HoraInicial` com `Reserva.DataFinal/HoraFinal`. Validada no `ReservaHandler` (ver seção 2.1).
 5. **Exclusão lógica (soft delete)**: todas as entidades possuem a flag `Ativo` (booleana). Nenhum registro é fisicamente excluído pela aplicação; "excluir" significa `Ativo = false`.
    - Exceção de modelagem: `ReservaRecurso` é uma tabela de junção pura (sem atributos próprios de negócio) — removê-la representa apenas a desvinculação de um recurso a uma reserva, não a exclusão de uma entidade. Por isso não recebeu a flag `Ativo`.
@@ -117,7 +116,7 @@ Regras:
 |---|---|---|
 | [.NET SDK](https://dotnet.microsoft.com/download/dotnet/10.0) | 10.0 | Conferir com `dotnet --list-sdks`. |
 | [PostgreSQL](https://www.postgresql.org/download/) | 13 ou superior | Precisa estar rodando. O usuário usado precisa ter permissão para criar banco (o `postgres` padrão tem). |
-| [Node.js](https://nodejs.org/) | 20.19+ ou 22.12+ | Só para o frontend (seção 5). Versões 20.x anteriores ainda compilam, mas o Vite exibe aviso. |
+| [Node.js](https://nodejs.org/) | 20.19+ ou 22.12+ | Só para o frontend (seção 4). Versões 20.x anteriores ainda compilam, mas o Vite exibe aviso. |
 | Postman (ou similar) | qualquer | Opcional, para testar os endpoints. O arquivo [GestaoReservas.WebApi.http](src/GestaoReservas.WebApi/GestaoReservas.WebApi.http) também serve (VS / VS Code com REST Client). |
 
 ### 3.2 Estrutura da solução
@@ -127,8 +126,7 @@ Regras:
 | `GestaoReservas.Domain` | Entidades, enums, DTOs (`Dtos/`) e interfaces dos providers (`I*Provider`). |
 | `GestaoReservas.Infrastructure` | `AppDbContext`, mapeamento Fluent API, implementação dos providers e migrations. |
 | `GestaoReservas.WebApi` | Controllers, handlers (regras de negócio), autenticação JWT, tratamento de erros e `Program.cs`. |
-| `GestaoReservas.Web` | Frontend React + TypeScript (Vite). Ver seção 5. Não faz parte da `.slnx` (é um projeto Node). |
-| `GestaoReservas.ConsoleClient` | Cliente em terminal (ver seção 4). Reaproveita as DTOs de `GestaoReservas.Domain`. |
+| `GestaoReservas.Web` | Frontend React + TypeScript (Vite). Ver seção 4. Não faz parte da `.slnx` (é um projeto Node). |
 
 ### 3.3 Configurar a conexão com o PostgreSQL e o JWT
 
@@ -195,34 +193,11 @@ A autenticação não alterou o modelo: o login usa a coluna `Senha` que já exi
 | `401` em todas as rotas | Falta o cabeçalho `Authorization: Bearer {token}`, ou o token expirou. Faça login de novo. |
 | Login com usuário antigo sempre falha | Usuários criados antes da coluna `Senha` ficaram com senha vazia. Defina uma senha editando o usuário (`PUT /api/usuarios/{id}`) com outra conta. |
 
-## 4. Cliente de terminal (`GestaoReservas.ConsoleClient`)
-
-Aplicação de console que consome a API via HTTP, atendendo ao requisito do trabalho de uma "aplicação em terminal" com inclusão, consulta, alteração, exclusão e navegação por menus. É intencionalmente simples (sem injeção de dependência, configuração externa ou testes). O frontend web (seção 5) cobre as mesmas funções com uma interface gráfica; o cliente de terminal continua funcionando como alternativa.
-
-Com a API já rodando (seção 3.4), em outro terminal:
-
-```bash
-dotnet run --project src/GestaoReservas.ConsoleClient
-```
-
-Por padrão aponta para `http://localhost:5001/`. Para apontar para outro endereço, defina a variável de ambiente antes de rodar:
-
-```bash
-API_BASE_URL=http://localhost:5001/ dotnet run --project src/GestaoReservas.ConsoleClient
-```
-
-Navegação:
-- **Tela de acesso**: `1. Entrar` (e-mail e senha; a senha não aparece na tela) ou `2. Criar conta` (cadastra e já entra). O token recebido é enviado em todas as chamadas seguintes.
-- **Menu principal**: mostra o usuário logado e lista as 5 entidades; cada uma abre um submenu com Listar, Buscar por id, Cadastrar, Atualizar e Desativar/Cancelar (opção `0` sempre volta um nível). `9. Sair da conta` volta à tela de acesso.
-- Se a API responder `401` (token expirado ou usuário desativado), a sessão é encerrada e a tela de acesso aparece de novo ao voltar ao menu principal.
-
-Erros da API (validação, regra de negócio, conflito, "não encontrado", não autenticado) aparecem como mensagem de texto, sem derrubar o programa — a exceção `ApiException` centraliza esse tratamento em [ApiClient.cs](src/GestaoReservas.ConsoleClient/ApiClient.cs). Datas usam o formato `dd/MM/yyyy` e horas `HH:mm`.
-
-## 5. Frontend web (`GestaoReservas.Web`)
+## 4. Frontend web (`GestaoReservas.Web`)
 
 Aplicação React 19 + TypeScript criada com Vite. Estilização própria em CSS puro (sem framework), com tema claro/escuro e layout responsivo. Detalhes de organização em [docs/arquitetura.md](docs/arquitetura.md#5-frontend).
 
-### 5.1 Rodar
+### 4.1 Rodar
 
 Com a API rodando (seção 3.4):
 
@@ -236,7 +211,7 @@ Abre em `http://localhost:3000` (porta fixa, porque é a origem liberada no CORS
 
 Outros scripts: `npm run build` (gera `dist/` após checagem de tipos), `npm run lint` e `npm run preview` (serve o `dist/` na porta 3000).
 
-### 5.2 Telas
+### 4.2 Telas
 
 | Tela | O que faz |
 |---|---|

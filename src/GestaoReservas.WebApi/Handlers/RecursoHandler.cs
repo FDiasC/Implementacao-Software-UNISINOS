@@ -96,7 +96,7 @@ public class RecursoHandler : IRecursoHandler
 
     private async Task ValidarNumeroPatrimonioUnicoAsync(string numeroPatrimonio, int? idParaIgnorar, CancellationToken ct)
     {
-        // Checagem prévia: evita o INSERT que falharia no índice único e "queimaria" um valor da sequência de ids.
+        // Verifica antes de gravar para devolver uma mensagem clara, em vez do erro do índice único do banco.
         if (await _recursoProvider.ExisteComNumeroPatrimonioAsync(numeroPatrimonio, idParaIgnorar, ct))
         {
             throw new ConflitoException($"Já existe um recurso com o número de patrimônio '{numeroPatrimonio}'.");

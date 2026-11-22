@@ -5,10 +5,8 @@ namespace GestaoReservas.WebApi.Handlers;
 /// <summary>Regras de negócio e orquestração do cadastro de reservas.</summary>
 public interface IReservaHandler
 {
-    /// <summary>Lista as reservas; por padrão somente as ativas.</summary>
     Task<List<ReservaDto>> ListarAsync(bool apenasAtivos, CancellationToken ct);
 
-    /// <summary>Obtém uma reserva pelo id. Lança <c>EntidadeNaoEncontradaException</c> se não existir.</summary>
     Task<ReservaDto> ObterPorIdAsync(int id, CancellationToken ct);
 
     /// <summary>Valida escopo, período, local, recursos e conflitos de horário e cadastra a reserva.</summary>

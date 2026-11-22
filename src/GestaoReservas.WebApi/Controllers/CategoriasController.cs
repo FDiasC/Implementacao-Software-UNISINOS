@@ -19,7 +19,6 @@ public class CategoriasController : ControllerBase
 
     /// <summary>Lista categorias.</summary>
     /// <param name="apenasAtivas">Quando true (padrão), retorna somente registros ativos.</param>
-    /// <param name="ct">Token de cancelamento da requisição.</param>
     /// <response code="200">Lista de categorias.</response>
     [HttpGet]
     [ProducesResponseType(typeof(List<CategoriaDto>), StatusCodes.Status200OK)]

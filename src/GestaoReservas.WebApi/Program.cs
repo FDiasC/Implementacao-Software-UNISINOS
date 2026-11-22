@@ -17,7 +17,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers()
     .AddJsonOptions(options => options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false)));
 
-// OpenAPI com o esquema "Bearer", para o botão "Authorize" do Swagger enviar o token.
+// Adiciona o botão "Authorize" no Swagger para enviar o token JWT.
 builder.Services.AddOpenApi(options => options.AddDocumentTransformer((document, _, _) =>
 {
     document.Components ??= new OpenApiComponents();
@@ -44,7 +44,7 @@ builder.Services.AddCors(options =>
         .AllowAnyHeader()
         .AllowAnyMethod()));
 
-// Autenticação JWT
+// Autenticação JWT: a chave de assinatura precisa ter pelo menos 32 caracteres.
 var jwtSecao = builder.Configuration.GetSection(JwtOptions.Secao);
 builder.Services.Configure<JwtOptions>(jwtSecao);
 var jwt = jwtSecao.Get<JwtOptions>() ?? new JwtOptions();
@@ -71,7 +71,7 @@ builder.Services
             ClockSkew = TimeSpan.FromMinutes(1),
             NameClaimType = "name"
         };
-        // 401 sem corpo por padrão; devolve ProblemDetails como o restante da API.
+        // Sem token válido: responde 401 no mesmo formato de erro (ProblemDetails) das demais rotas.
         options.Events = new JwtBearerEvents
         {
             OnChallenge = async context =>

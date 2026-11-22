@@ -9,8 +9,8 @@ public interface IReservaProvider
     Task<Reserva?> ObterReservaPorIdAsync(int id, CancellationToken ct);
 
     /// <summary>
-    /// Reservas ativas cujas datas tocam o intervalo [dataInicial, dataFinal] (pré-filtro por data;
-    /// o cruzamento exato com as horas é feito pelo handler). Inclui os recursos vinculados.
+    /// Reservas ativas nas datas informadas, com seus recursos.
+    /// A sobreposição exata de data e hora é verificada no ReservaHandler.
     /// </summary>
     Task<List<Reserva>> ListarAtivasNoPeriodoAsync(DateOnly dataInicial, DateOnly dataFinal, int? idParaIgnorar, CancellationToken ct);
 

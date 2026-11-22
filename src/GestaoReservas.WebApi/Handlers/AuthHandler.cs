@@ -30,8 +30,7 @@ public class AuthHandler : IAuthHandler
         var usuario = await _usuarioProvider.ObterUsuarioPorEmailAsync(email, ct);
 
         // Mesma mensagem para e-mail inexistente, senha errada ou usuário inativo,
-        // para não revelar quais e-mails estão cadastrados.
-        // Senha em texto puro: ver regra 7 do README (trocar por hash antes de uso real).
+        // para não revelar quais e-mails estão cadastrados. A senha ainda é guardada sem hash.
         if (usuario is null || !usuario.Ativo || string.IsNullOrEmpty(usuario.Senha) || usuario.Senha != dto.Senha)
         {
             throw new NaoAutenticadoException(MensagemCredenciaisInvalidas);

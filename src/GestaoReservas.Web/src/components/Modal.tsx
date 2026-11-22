@@ -6,7 +6,6 @@ interface ModalProps {
   titulo: string
   aoFechar: () => void
   children: ReactNode
-  /** Botões do rodapé. */
   rodape?: ReactNode
   largura?: 'normal' | 'larga'
 }
