@@ -1,7 +1,10 @@
 using System.Net;
+using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using GestaoReservas.Domain.Dtos.Auth;
+using GestaoReservas.Domain.Dtos.Usuarios;
 
 namespace GestaoReservas.ConsoleClient;
 
@@ -18,6 +21,25 @@ public class ApiClient
     public ApiClient(string baseUrl)
     {
         _http = new HttpClient { BaseAddress = new Uri(baseUrl) };
+    }
+
+    /// <summary>Usuário dono do token atual; nulo quando não há sessão (antes do login ou após um 401).</summary>
+    public UsuarioDto? UsuarioLogado { get; private set; }
+
+    /// <summary>Faz login e passa a enviar o token JWT em todas as requisições.</summary>
+    public async Task EntrarAsync(string email, string senha, CancellationToken ct = default)
+    {
+        var resposta = await EnviarAsync(HttpMethod.Post, "api/auth/token", new LoginDto(email, senha), ct);
+        var token = (await resposta.Content.ReadFromJsonAsync<TokenDto>(JsonOptions, ct))!;
+
+        _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token.Token);
+        UsuarioLogado = token.Usuario;
+    }
+
+    public void Sair()
+    {
+        _http.DefaultRequestHeaders.Authorization = null;
+        UsuarioLogado = null;
     }
 
     public async Task<List<T>> ListarAsync<T>(string caminho, CancellationToken ct = default)
@@ -71,7 +93,15 @@ public class ApiClient
             return resposta;
         }
 
-        throw new ApiException(await ExtrairMensagemDeErroAsync(resposta, ct));
+        var mensagem = await ExtrairMensagemDeErroAsync(resposta, ct);
+
+        // Token ausente/expirado ou usuário desativado: encerra a sessão para o menu pedir login de novo.
+        if (resposta.StatusCode == HttpStatusCode.Unauthorized)
+        {
+            Sair();
+        }
+
+        throw new ApiException(mensagem);
     }
 
     private static async Task<string> ExtrairMensagemDeErroAsync(HttpResponseMessage resposta, CancellationToken ct)

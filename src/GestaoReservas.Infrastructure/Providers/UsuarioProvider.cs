@@ -29,6 +29,9 @@ public class UsuarioProvider : IUsuarioProvider
     public Task<Usuario?> ObterUsuarioPorIdAsync(int id, CancellationToken ct) =>
         _context.Usuarios.FirstOrDefaultAsync(u => u.Id == id, ct);
 
+    public Task<Usuario?> ObterUsuarioPorEmailAsync(string email, CancellationToken ct) =>
+        _context.Usuarios.FirstOrDefaultAsync(u => u.Email.ToLower() == email.ToLower(), ct);
+
     public Task<bool> ExisteComEmailAsync(string email, int? idParaIgnorar, CancellationToken ct) =>
         _context.Usuarios.AnyAsync(u => u.Email.ToLower() == email.ToLower() && (idParaIgnorar == null || u.Id != idParaIgnorar), ct);
 

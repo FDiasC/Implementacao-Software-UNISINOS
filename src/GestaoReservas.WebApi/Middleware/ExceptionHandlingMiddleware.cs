@@ -31,6 +31,10 @@ public class ExceptionHandlingMiddleware
         {
             await EscreverProblemaAsync(context, StatusCodes.Status409Conflict, ex.Message);
         }
+        catch (NaoAutenticadoException ex)
+        {
+            await EscreverProblemaAsync(context, StatusCodes.Status401Unauthorized, ex.Message);
+        }
         catch (RegraDeNegocioException ex)
         {
             await EscreverProblemaAsync(context, StatusCodes.Status400BadRequest, ex.Message);
@@ -54,7 +58,7 @@ public class ExceptionHandlingMiddleware
         }
     }
 
-    private static async Task EscreverProblemaAsync(HttpContext context, int statusCode, string mensagem)
+    internal static async Task EscreverProblemaAsync(HttpContext context, int statusCode, string mensagem)
     {
         context.Response.ContentType = "application/problem+json";
         context.Response.StatusCode = statusCode;

@@ -21,6 +21,54 @@ public static class ConsoleInput
         }
     }
 
+    /// <summary>Lê uma senha sem ecoar os caracteres digitados (mostra '*').</summary>
+    public static string LerSenha(string rotulo)
+    {
+        if (Console.IsInputRedirected)
+        {
+            return LerTexto(rotulo);
+        }
+
+        while (true)
+        {
+            Console.Write($"{rotulo}: ");
+            var senha = new System.Text.StringBuilder();
+            while (true)
+            {
+                var tecla = Console.ReadKey(intercept: true);
+                if (tecla.Key == ConsoleKey.Enter)
+                {
+                    Console.WriteLine();
+                    break;
+                }
+
+                if (tecla.Key == ConsoleKey.Backspace)
+                {
+                    if (senha.Length > 0)
+                    {
+                        senha.Length--;
+                        Console.Write("\b \b");
+                    }
+
+                    continue;
+                }
+
+                if (!char.IsControl(tecla.KeyChar))
+                {
+                    senha.Append(tecla.KeyChar);
+                    Console.Write('*');
+                }
+            }
+
+            if (senha.Length > 0)
+            {
+                return senha.ToString();
+            }
+
+            MostrarErro("Este campo é obrigatório.");
+        }
+    }
+
     public static int LerInteiro(string rotulo)
     {
         while (true)

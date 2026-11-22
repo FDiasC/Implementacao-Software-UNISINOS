@@ -78,7 +78,7 @@ public static class UsuariosMenu
     {
         var nome = ConsoleInput.LerTexto("Nome");
         var email = ConsoleInput.LerTexto("E-mail");
-        var senha = ConsoleInput.LerTexto("Senha (mínimo 4 caracteres)");
+        var senha = ConsoleInput.LerSenha("Senha (mínimo 4 caracteres)");
 
         var criado = await api.CriarAsync<UsuarioDto>("api/usuarios", new CriarUsuarioDto(nome, email, senha));
         ConsoleInput.MostrarSucesso($"Usuário criado com id {criado.Id}.");
