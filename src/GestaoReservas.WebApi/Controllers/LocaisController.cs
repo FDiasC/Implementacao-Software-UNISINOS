@@ -19,7 +19,6 @@ public class LocaisController : ControllerBase
 
     /// <summary>Lista locais.</summary>
     /// <param name="apenasAtivos">Quando true (padrão), retorna somente registros ativos.</param>
-    /// <param name="ct">Token de cancelamento da requisição.</param>
     /// <response code="200">Lista de locais.</response>
     [HttpGet]
     [ProducesResponseType(typeof(List<LocalDto>), StatusCodes.Status200OK)]

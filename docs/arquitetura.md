@@ -8,7 +8,6 @@ Este documento descreve como o sistema de gestão de reservas está organizado: 
 flowchart LR
     subgraph Clientes
         WEB["Frontend web<br/>React + TypeScript<br/>localhost:3000"]
-        CLI["Cliente de terminal<br/>.NET console"]
         SW["Swagger UI<br/>/swagger"]
     end
 
@@ -24,7 +23,6 @@ flowchart LR
     DB[("PostgreSQL<br/>gestao_reservas")]
 
     WEB -- "HTTP/JSON + Bearer token" --> MW
-    CLI -- "HTTP/JSON + Bearer token" --> MW
     SW -- "HTTP/JSON" --> MW
     PV -- "EF Core / Npgsql" --> DB
 ```
@@ -42,12 +40,10 @@ flowchart TB
     WebApi["GestaoReservas.WebApi<br/>Controllers · Handlers · Middleware · Auth"]
     Infra["GestaoReservas.Infrastructure<br/>AppDbContext · Configurations · Providers · Migrations"]
     Domain["GestaoReservas.Domain<br/>Entities · Enums · DTOs · I*Provider"]
-    Console["GestaoReservas.ConsoleClient"]
 
     WebApi --> Infra
     WebApi --> Domain
     Infra --> Domain
-    Console --> Domain
 ```
 
 | Camada | Contém | Não contém |
@@ -65,7 +61,7 @@ Responsabilidade de cada peça numa operação:
 | **Provider** | `LocalProvider`/`RecursoProvider` buscam o local e os recursos; `ReservaProvider.ListarAtivasNoPeriodoAsync` traz as reservas ativas nas mesmas datas (o handler calcula a sobreposição exata de data+hora) e `AdicionarReservaAsync`/`SalvarAlteracoesAsync` gravam. |
 | **DTO** | Fronteira da API: a entidade nunca é serializada diretamente (a `Senha`, por exemplo, nunca sai). |
 
-As DTOs ficam no Domain (e não na WebApi) para serem reaproveitadas pelo cliente de terminal sem duplicação.
+As DTOs ficam no Domain porque descrevem o contrato da API independentemente de como ela é exposta; a WebApi apenas as recebe e devolve.
 
 ## 3. Caminho de uma requisição
 
@@ -206,7 +202,7 @@ src/GestaoReservas.Web/src
 | Providers com interface no Domain | Usar o `DbContext` direto nos handlers | Isola o EF Core da regra de negócio e deixa claro o que cada handler consulta. |
 | Exclusão lógica (`Ativo`) | `DELETE` físico | Requisito do trabalho; preserva o histórico de reservas canceladas. |
 | Exceções de domínio + middleware | `return BadRequest(...)` espalhado pelos handlers | Um único ponto define o formato de erro (`ProblemDetails`) e o código HTTP. |
-| JWT com chave simétrica | Cookie de sessão; ASP.NET Identity | Funciona igual para o frontend e o cliente de terminal, sem estado no servidor e sem as tabelas extras do Identity. |
+| JWT com chave simétrica | Cookie de sessão; ASP.NET Identity | Funciona para qualquer cliente HTTP (frontend, Swagger, Postman), sem estado no servidor e sem as tabelas extras do Identity. |
 | `FallbackPolicy` global | `[Authorize]` em cada controller | Protegido por padrão; só o que é público precisa ser marcado. |
 | Cadastro de usuário público | Exigir token também no cadastro | Sem isso não haveria como criar o primeiro usuário. |
 | Roteamento por hash próprio | React Router | São seis telas fixas sem parâmetros; evita uma dependência. |

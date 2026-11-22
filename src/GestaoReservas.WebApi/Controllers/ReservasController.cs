@@ -19,7 +19,6 @@ public class ReservasController : ControllerBase
 
     /// <summary>Lista reservas.</summary>
     /// <param name="apenasAtivos">Quando true (padrão), retorna somente reservas ativas.</param>
-    /// <param name="ct">Token de cancelamento da requisição.</param>
     /// <response code="200">Lista de reservas.</response>
     [HttpGet]
     [ProducesResponseType(typeof(List<ReservaDto>), StatusCodes.Status200OK)]

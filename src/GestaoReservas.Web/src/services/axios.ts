@@ -30,7 +30,7 @@ export function removerToken(): void {
   try {
     localStorage.removeItem(TOKEN_KEY)
   } catch {
-    // ignora
+    // Sem armazenamento disponível: não há token salvo para remover.
   }
 }
 

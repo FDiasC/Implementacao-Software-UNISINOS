@@ -19,7 +19,6 @@ public class RecursosController : ControllerBase
 
     /// <summary>Lista recursos.</summary>
     /// <param name="apenasAtivos">Quando true (padrão), retorna somente registros ativos.</param>
-    /// <param name="ct">Token de cancelamento da requisição.</param>
     /// <response code="200">Lista de recursos.</response>
     [HttpGet]
     [ProducesResponseType(typeof(List<RecursoDto>), StatusCodes.Status200OK)]

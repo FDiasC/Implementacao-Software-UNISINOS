@@ -1,4 +1,4 @@
-// Ícones em SVG inline (traço 2px, 24x24), sem biblioteca externa.
+// Ícones em SVG, desenhados aqui para não depender de biblioteca externa.
 const CAMINHOS = {
   inicio: 'M3 10.5 12 3l9 7.5V20a1 1 0 0 1-1 1h-5v-6h-6v6H4a1 1 0 0 1-1-1z',
   calendario: 'M8 2v4M16 2v4M3 9h18M5 4h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2z',

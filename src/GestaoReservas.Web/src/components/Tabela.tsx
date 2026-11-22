@@ -3,7 +3,6 @@ import type { ReactNode } from 'react'
 export interface Coluna<T> {
   titulo: string
   render: (item: T) => ReactNode
-  /** Classe aplicada ao <th> e <td> (ex.: "num" para alinhar à direita). */
   classe?: string
 }
 

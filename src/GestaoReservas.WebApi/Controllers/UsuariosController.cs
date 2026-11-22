@@ -20,7 +20,6 @@ public class UsuariosController : ControllerBase
 
     /// <summary>Lista usuários.</summary>
     /// <param name="apenasAtivos">Quando true (padrão), retorna somente registros ativos.</param>
-    /// <param name="ct">Token de cancelamento da requisição.</param>
     /// <response code="200">Lista de usuários.</response>
     [HttpGet]
     [ProducesResponseType(typeof(List<UsuarioDto>), StatusCodes.Status200OK)]

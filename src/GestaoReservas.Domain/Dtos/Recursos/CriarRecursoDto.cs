@@ -4,7 +4,6 @@ namespace GestaoReservas.Domain.Dtos.Recursos;
 
 /// <summary>Dados para cadastrar um recurso.</summary>
 /// <param name="NumeroPatrimonio">Número de patrimônio, único no sistema (até 50 caracteres).</param>
-/// <param name="Descricao">Descrição do recurso (até 200 caracteres).</param>
 /// <param name="DiasMinimosReserva">Duração mínima, em dias, de uma reserva do recurso (mínimo 1).</param>
 /// <param name="DiasMaximosReserva">Duração máxima, em dias, de uma reserva do recurso (mínimo 1; não pode ser menor que o mínimo).</param>
 /// <param name="CategoriaId">Categoria existente, ativa e do tipo Recurso.</param>

@@ -41,7 +41,7 @@ public class ExceptionHandlingMiddleware
         }
         catch (OperationCanceledException) when (context.RequestAborted.IsCancellationRequested)
         {
-            // Client encerrou a requisição = não há resposta a enviar.
+            // O cliente cancelou a requisição: não há para quem responder.
         }
         catch (DbUpdateException ex) when (ex.InnerException is PostgresException { SqlState: PostgresErrorCodes.UniqueViolation })
         {

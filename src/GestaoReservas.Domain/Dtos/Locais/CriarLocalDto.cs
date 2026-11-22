@@ -3,10 +3,6 @@ using System.ComponentModel.DataAnnotations;
 namespace GestaoReservas.Domain.Dtos.Locais;
 
 /// <summary>Dados para cadastrar um local.</summary>
-/// <param name="Sala">Identificação da sala (até 100 caracteres).</param>
-/// <param name="Predio">Prédio onde a sala fica (até 100 caracteres).</param>
-/// <param name="Capacidade">Número máximo de pessoas (mínimo 1).</param>
-/// <param name="Andar">Andar do prédio (0 ou mais).</param>
 /// <param name="PermiteRecursos">Se reservas deste local podem incluir recursos.</param>
 /// <param name="CategoriaId">Categoria existente, ativa e do tipo Local.</param>
 public record CriarLocalDto(
