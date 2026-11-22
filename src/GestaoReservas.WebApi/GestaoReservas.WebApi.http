@@ -1,28 +1,53 @@
 @host = http://localhost:5001
 
+### 1. Criar conta (rota pública)
+POST {{host}}/api/usuarios
+Content-Type: application/json
+
+{ "nome": "Maria Silva", "email": "maria@exemplo.com", "senha": "1234" }
+
+### 2. Login: copie o "token" da resposta para a variável abaixo
+POST {{host}}/api/auth/token
+Content-Type: application/json
+
+{ "email": "maria@exemplo.com", "senha": "1234" }
+
+###
+@token = COLE_O_TOKEN_AQUI
+
+### Usuário logado
+GET {{host}}/api/auth/me
+Authorization: Bearer {{token}}
+
 ### Categorias
 POST {{host}}/api/categorias
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "nome": "Auditórios", "tipo": "Local" }
 
 ###
 GET {{host}}/api/categorias
+Authorization: Bearer {{token}}
 
 ### Locais
 POST {{host}}/api/locais
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
 { "sala": "101", "predio": "Bloco A", "capacidade": 40, "andar": 1, "permiteRecursos": true, "categoriaId": 1 }
 
 ###
 GET {{host}}/api/locais
+Authorization: Bearer {{token}}
 
-### Usuários
-POST {{host}}/api/usuarios
+### Reservas
+POST {{host}}/api/reservas
 Content-Type: application/json
+Authorization: Bearer {{token}}
 
-{ "nome": "Maria Silva", "email": "maria@exemplo.com" }
+{ "usuarioId": 1, "localId": 1, "dataInicial": "2026-12-10", "horaInicial": "08:00:00", "dataFinal": "2026-12-10", "horaFinal": "12:00:00", "recursosId": [] }
 
 ###
-GET {{host}}/api/usuarios
+GET {{host}}/api/reservas
+Authorization: Bearer {{token}}

@@ -3,7 +3,23 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Gestão de reservas de locais e recursos" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
     <title>Gestão de Reservas</title>
+    <script>
+      // Aplica o tema salvo antes do primeiro render, evitando o "piscar" do tema claro.
+      try {
+        var tema = localStorage.getItem('gestao-reservas:tema')
+        if (tema === 'escuro') document.documentElement.dataset.theme = 'dark'
+        else if (tema === 'claro') document.documentElement.dataset.theme = 'light'
+      } catch (e) {}
+    </script>
   </head>
   <body>
     <div id="root"></div>

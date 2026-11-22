@@ -8,6 +8,8 @@ public interface IUsuarioProvider
 
     Task<Usuario?> ObterUsuarioPorIdAsync(int id, CancellationToken ct);
 
+    Task<Usuario?> ObterUsuarioPorEmailAsync(string email, CancellationToken ct);
+
     Task<bool> ExisteComEmailAsync(string email, int? idParaIgnorar, CancellationToken ct);
 
     Task AdicionarUsuarioAsync(Usuario usuario, CancellationToken ct);

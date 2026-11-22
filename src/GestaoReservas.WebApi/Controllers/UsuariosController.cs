@@ -1,5 +1,6 @@
 using GestaoReservas.Domain.Dtos.Usuarios;
 using GestaoReservas.WebApi.Handlers;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GestaoReservas.WebApi.Controllers;
@@ -39,7 +40,9 @@ public class UsuariosController : ControllerBase
     /// <response code="201">Registro criado; o cabeçalho Location aponta para o recurso.</response>
     /// <response code="400">Dados inválidos ou regra de negócio violada.</response>
     /// <response code="409">Conflito com um registro já existente.</response>
+    /// <remarks>Rota pública (não exige token), para permitir criar a primeira conta e o auto cadastro.</remarks>
     [HttpPost]
+    [AllowAnonymous]
     [ProducesResponseType(typeof(UsuarioDto), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status400BadRequest)]
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
