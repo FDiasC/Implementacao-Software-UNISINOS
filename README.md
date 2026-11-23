@@ -195,7 +195,7 @@ A autenticação não alterou o modelo: o login usa a coluna `Senha` que já exi
 
 ## 4. Frontend web (`GestaoReservas.Web`)
 
-Aplicação React 19 + TypeScript criada com Vite. Estilização própria em CSS puro (sem framework), com tema claro/escuro e layout responsivo. Detalhes de organização em [docs/arquitetura.md](docs/arquitetura.md#5-frontend).
+Aplicação React 19 + TypeScript criada com Vite. Estilização própria em CSS puro (sem framework), com tema escuro e layout responsivo. Detalhes de organização em [docs/arquitetura.md](docs/arquitetura.md#5-frontend).
 
 ### 4.1 Rodar
 
@@ -209,7 +209,7 @@ npm run dev
 
 Abre em `http://localhost:3000` (porta fixa, porque é a origem liberada no CORS da API). Para apontar para outra API, copie `.env.example` para `.env.local` e ajuste `VITE_API_URL` (padrão `http://localhost:5001/api`).
 
-Outros scripts: `npm run build` (gera `dist/` após checagem de tipos), `npm run lint` e `npm run preview` (serve o `dist/` na porta 3000).
+Outros scripts: `npm run build` (gera `dist/` após checagem de tipos), `npm run lint`, `npm test` (seção 4.3) e `npm run preview` (serve o `dist/` na porta 3000).
 
 ### 4.2 Telas
 
@@ -221,3 +221,26 @@ Outros scripts: `npm run build` (gera `dist/` após checagem de tipos), `npm run
 | **Locais**, **Recursos**, **Categorias**, **Usuários** | Listagem com busca e filtros, cadastro e edição em modal, desativação com confirmação e opção de exibir inativos. |
 
 Mensagens de erro da API (`ProblemDetails`) aparecem dentro do formulário, que continua aberto para correção; sucessos aparecem como aviso temporário no canto da tela.
+
+### 4.3 Testes
+
+Testes unitários com [Vitest](https://vitest.dev/) e [Testing Library](https://testing-library.com/), rodando num navegador simulado (jsdom). Não precisam da API nem do banco: as chamadas HTTP são substituídas por respostas falsas dentro dos próprios testes.
+
+```bash
+cd src/GestaoReservas.Web
+npm test
+```
+
+`npm run test:watch` deixa os testes rodando e repete a cada alteração salva.
+
+| Arquivo | O que verifica |
+|---|---|
+| `utils/formatos.test.ts` | Formatação de data/hora, duração em dias arredondada para cima (mesma regra do `ReservaHandler`), situação da reserva (agendada, em andamento, encerrada, cancelada) e busca sem acento. |
+| `services/api.test.ts` | Conversão dos erros da API (`ProblemDetails`, validação por campo, API fora do ar) em mensagens; rotas, verbos e filtros enviados por cada cadastro; token guardado no login. |
+| `services/axios.test.ts` | Envio do token no cabeçalho `Authorization`; em `401` o token é descartado e a sessão encerrada, exceto no próprio login (senha errada). |
+| `hooks/useRota.test.ts` | Tela atual a partir do endereço (`#/reservas`) e navegação. |
+| `hooks/useFormulario.test.tsx` | Modal de cadastro/edição: sucesso fecha e avisa; erro da API mantém o modal aberto com a mensagem; editar um campo limpa o erro. Confirmação de desativação. |
+| `components/Tabela.test.tsx` | Estado vazio, carregando, linhas inativas esmaecidas e coluna de ações. |
+| `components/Modal.test.tsx` | Foco no primeiro campo, fechar pelo X e pelo Esc, botões da confirmação. |
+| `pages/Login.test.tsx` | Login, mensagem de credenciais inválidas e criação de conta seguida de login. |
+| `contexts/AuthProvider.test.tsx` | Restauração da sessão salva, descarte de token recusado e volta ao login quando a sessão expira. |

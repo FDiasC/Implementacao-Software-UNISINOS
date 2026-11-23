@@ -1,6 +1,6 @@
 /* =========================================================================
    Gestão de Reservas — estilos globais (CSS puro, sem framework)
-   1. Tokens (cores, raios, sombras) + tema escuro
+   1. Tokens (cores, raios, sombras) — tema escuro
    2. Base
    3. Layout (menu lateral, barra do topo, conteúdo)
    4. Componentes (botões, cartões, tabela, selos, formulários, modal, toasts)
@@ -9,92 +9,13 @@
    ========================================================================= */
 
 /* ---------- 1. Tokens ---------- */
+/* A aplicação usa somente o tema escuro. */
 :root {
-  color-scheme: light;
+  color-scheme: dark;
 
   --fonte: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
   --fonte-mono: ui-monospace, 'Cascadia Code', 'SF Mono', Consolas, monospace;
 
-  --fundo: #f4f6fb;
-  --superficie: #ffffff;
-  --superficie-2: #f8fafc;
-  --superficie-hover: #f1f5f9;
-  --borda: #e2e8f0;
-  --borda-forte: #cbd5e1;
-  --texto: #0f172a;
-  --texto-suave: #64748b;
-  --texto-inverso: #ffffff;
-
-  --primaria: #4f46e5;
-  --primaria-hover: #4338ca;
-  --primaria-suave: #eef2ff;
-  --primaria-texto: #4338ca;
-  --foco: rgb(79 70 229 / 0.35);
-
-  --sucesso: #15803d;
-  --sucesso-suave: #dcfce7;
-  --perigo: #dc2626;
-  --perigo-hover: #b91c1c;
-  --perigo-suave: #fee2e2;
-  --aviso: #b45309;
-  --aviso-suave: #fef3c7;
-  --info: #0369a1;
-  --info-suave: #e0f2fe;
-  --neutro: #475569;
-  --neutro-suave: #f1f5f9;
-
-  --lateral-fundo: #0f172a;
-  --lateral-texto: #cbd5e1;
-  --lateral-texto-forte: #ffffff;
-  --lateral-hover: rgb(255 255 255 / 0.06);
-  --lateral-ativo: rgb(129 140 248 / 0.18);
-  --lateral-borda: rgb(255 255 255 / 0.08);
-
-  --raio: 10px;
-  --raio-grande: 14px;
-  --sombra: 0 1px 2px rgb(15 23 42 / 0.06), 0 1px 3px rgb(15 23 42 / 0.04);
-  --sombra-alta: 0 20px 45px -12px rgb(15 23 42 / 0.35);
-  --transicao: 150ms ease;
-
-  --largura-lateral: 248px;
-}
-
-/* Tema escuro: preferência do sistema (sem escolha salva) ou escolha explícita no botão. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme='light']) {
-    color-scheme: dark;
-    --fundo: #0b1120;
-    --superficie: #111827;
-    --superficie-2: #0f172a;
-    --superficie-hover: #1e293b;
-    --borda: #1f2937;
-    --borda-forte: #334155;
-    --texto: #e2e8f0;
-    --texto-suave: #94a3b8;
-    --primaria: #6366f1;
-    --primaria-hover: #818cf8;
-    --primaria-suave: rgb(99 102 241 / 0.16);
-    --primaria-texto: #a5b4fc;
-    --foco: rgb(129 140 248 / 0.45);
-    --sucesso: #4ade80;
-    --sucesso-suave: rgb(34 197 94 / 0.15);
-    --perigo: #f87171;
-    --perigo-hover: #ef4444;
-    --perigo-suave: rgb(239 68 68 / 0.15);
-    --aviso: #fbbf24;
-    --aviso-suave: rgb(245 158 11 / 0.15);
-    --info: #38bdf8;
-    --info-suave: rgb(14 165 233 / 0.15);
-    --neutro: #94a3b8;
-    --neutro-suave: rgb(148 163 184 / 0.14);
-    --lateral-fundo: #070b16;
-    --sombra: 0 1px 2px rgb(0 0 0 / 0.4);
-    --sombra-alta: 0 24px 50px -12px rgb(0 0 0 / 0.7);
-  }
-}
-
-:root[data-theme='dark'] {
-  color-scheme: dark;
   --fundo: #0b1120;
   --superficie: #111827;
   --superficie-2: #0f172a;
@@ -103,11 +24,14 @@
   --borda-forte: #334155;
   --texto: #e2e8f0;
   --texto-suave: #94a3b8;
+  --texto-inverso: #ffffff;
+
   --primaria: #6366f1;
   --primaria-hover: #818cf8;
   --primaria-suave: rgb(99 102 241 / 0.16);
   --primaria-texto: #a5b4fc;
   --foco: rgb(129 140 248 / 0.45);
+
   --sucesso: #4ade80;
   --sucesso-suave: rgb(34 197 94 / 0.15);
   --perigo: #f87171;
@@ -119,9 +43,21 @@
   --info-suave: rgb(14 165 233 / 0.15);
   --neutro: #94a3b8;
   --neutro-suave: rgb(148 163 184 / 0.14);
+
   --lateral-fundo: #070b16;
+  --lateral-texto: #cbd5e1;
+  --lateral-texto-forte: #ffffff;
+  --lateral-hover: rgb(255 255 255 / 0.06);
+  --lateral-ativo: rgb(129 140 248 / 0.18);
+  --lateral-borda: rgb(255 255 255 / 0.08);
+
+  --raio: 10px;
+  --raio-grande: 14px;
   --sombra: 0 1px 2px rgb(0 0 0 / 0.4);
   --sombra-alta: 0 24px 50px -12px rgb(0 0 0 / 0.7);
+  --transicao: 150ms ease;
+
+  --largura-lateral: 248px;
 }
 
 /* ---------- 2. Base ---------- */
@@ -324,10 +260,8 @@ textarea {
   color: var(--lateral-texto-forte);
 }
 
-.lateral__botoes {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.lateral__sair {
+  justify-self: start;
 }
 
 .perfil {
@@ -462,7 +396,7 @@ textarea {
   background: var(--superficie-hover);
 }
 
-/* Vermelho fixo (não o token do tema) para manter contraste com texto branco nos dois temas. */
+/* Vermelho mais escuro que o token --perigo para manter contraste com o texto branco. */
 .botao--perigo {
   background: #dc2626;
   color: #fff;
@@ -1222,12 +1156,6 @@ input[type='radio'] {
   grid-template-columns: 1.1fr 1fr;
 }
 
-.acesso__tema {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-}
-
 .acesso__apresentacao {
   display: flex;
   flex-direction: column;
@@ -1474,8 +1402,7 @@ input[type='radio'] {
     z-index: 30;
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    gap: 8px;
+    gap: 12px;
     padding: 8px 12px;
     background: var(--superficie);
     border-bottom: 1px solid var(--borda);

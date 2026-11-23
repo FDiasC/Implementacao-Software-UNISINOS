@@ -149,6 +149,7 @@ O token é *stateless*: a API não guarda sessões. Por isso não há "logout no
 | HTTP | axios, com interceptadores para o token |
 | Estilo | CSS puro com variáveis (`src/index.css`), sem framework |
 | Navegação | Roteamento por *hash* próprio (`#/reservas`), sem biblioteca |
+| Testes | Vitest + Testing Library, em navegador simulado (jsdom) |
 
 ### 5.2 Organização das pastas
 
@@ -156,7 +157,7 @@ O token é *stateless*: a API não guarda sessões. Por isso não há "logout no
 src/GestaoReservas.Web/src
 ├── main.tsx                 # monta <NotificacoesProvider><AuthProvider><App/>
 ├── App.tsx                  # decide: verificando sessão → Login → Layout + página da rota
-├── index.css                # tokens de cor, tema escuro, componentes e responsivo
+├── index.css                # tokens de cor (tema escuro), componentes e responsivo
 ├── types/index.ts           # espelho das DTOs da API
 ├── services/
 │   ├── axios.ts             # instância axios, armazenamento do token, interceptadores
@@ -168,10 +169,13 @@ src/GestaoReservas.Web/src
 │   ├── useRota.ts           # rota atual a partir do hash
 │   ├── useCarregar.ts       # busca dados com estado de carga/erro e recarregar()
 │   └── useFormulario.ts     # estado do modal de cadastro/edição e da confirmação
-├── components/              # Layout, Modal/Confirmar, Tabela, Campo, Pagina (cabeçalho, filtros, selos), Icone, Tema
+├── components/              # Layout, Modal/Confirmar, Tabela, Campo, Pagina (cabeçalho, filtros, selos), Icone
 ├── pages/                   # Login, Inicio, Reservas, Locais, Recursos, Categorias, Usuarios
-└── utils/formatos.ts        # datas, duração em dias, situação da reserva, busca sem acento
+├── utils/formatos.ts        # datas, duração em dias, situação da reserva, busca sem acento
+└── test/setup.ts            # configuração comum dos testes
 ```
+
+Os testes ficam ao lado do arquivo testado, com o sufixo `.test.ts(x)` (ex.: `utils/formatos.test.ts`).
 
 ### 5.3 Comunicação com a API
 
@@ -189,7 +193,7 @@ src/GestaoReservas.Web/src
 
 ### 5.5 Estilo e responsividade
 
-- Cores, raios e sombras são variáveis CSS em `:root`. O tema escuro redefine as mesmas variáveis em `[data-theme='dark']` e em `@media (prefers-color-scheme: dark)`; o botão de tema grava a escolha no navegador e um pequeno script no `index.html` aplica o tema antes do primeiro desenho da página.
+- A interface usa somente o tema escuro. Cores, raios e sombras são variáveis CSS em `:root`; os componentes usam só essas variáveis, então mudar a paleta é mexer em um lugar.
 - Acima de 1080px: menu lateral fixo. Abaixo: barra no topo e menu em gaveta.
 - Abaixo de 720px: as tabelas viram cartões (cada célula mostra o título da coluna via `data-titulo`), os formulários passam a uma coluna e os botões do modal ocupam a largura toda.
 - Modais usam o `<dialog>` nativo, que já prende o foco e fecha com Esc.
@@ -206,7 +210,9 @@ src/GestaoReservas.Web/src
 | `FallbackPolicy` global | `[Authorize]` em cada controller | Protegido por padrão; só o que é público precisa ser marcado. |
 | Cadastro de usuário público | Exigir token também no cadastro | Sem isso não haveria como criar o primeiro usuário. |
 | Roteamento por hash próprio | React Router | São seis telas fixas sem parâmetros; evita uma dependência. |
-| CSS puro com variáveis | Tailwind, biblioteca de componentes | Nenhuma dependência nova, controle total do visual e tema escuro com as mesmas variáveis. |
+| CSS puro com variáveis | Tailwind, biblioteca de componentes | Nenhuma dependência nova e controle total do visual, com a paleta centralizada nas variáveis. |
+| Somente tema escuro | Alternar entre claro e escuro | Uma única paleta para manter e testar; menos código no frontend. |
+| Vitest para os testes do frontend | Jest | Usa a mesma configuração do Vite (TypeScript e JSX sem configuração extra). Versão 4, que funciona com Node 20. |
 | Validações repetidas no frontend como aviso | Só a API valida | Retorno imediato (duração, conflito) sem perder a API como fonte da verdade. |
 
 ## 7. Limitações conhecidas e próximos passos
@@ -219,4 +225,4 @@ src/GestaoReservas.Web/src
 | Chave JWT de desenvolvimento no repositório | Insegura fora do ambiente local. | Definir `Jwt:Chave` por User Secrets/variável de ambiente em qualquer outro ambiente (o README explica). |
 | Conflito de horário checado antes do `INSERT` | Duas requisições simultâneas podem passar pela checagem ao mesmo tempo. | Restrição de exclusão no PostgreSQL (`EXCLUDE USING gist` com `tsrange`) ou transação serializável. |
 | Listas sem paginação | Lento com muitos registros. | Paginação e filtros no servidor (`?pagina=&tamanho=`). |
-| Sem testes automatizados | Regressões só aparecem em teste manual. | Testes de unidade dos handlers (providers falsos) e de integração da API. |
+| Backend sem testes automatizados (o frontend tem) | Regressões nas regras da API só aparecem em teste manual. | Testes de unidade dos handlers (providers falsos) e de integração da API. |
