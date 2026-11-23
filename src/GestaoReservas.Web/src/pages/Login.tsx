@@ -46,17 +46,6 @@ export function Login() {
           Gestão de Reservas
         </span>
         <p>Reserve salas, auditórios e equipamentos sem conflito de horário.</p>
-        <ul>
-          <li>
-            <Icone nome="check" /> Locais e recursos em um só lugar
-          </li>
-          <li>
-            <Icone nome="check" /> Verificação automática de choque de horário
-          </li>
-          <li>
-            <Icone nome="check" /> Histórico de reservas canceladas
-          </li>
-        </ul>
       </section>
 
       <section className="acesso__painel">
