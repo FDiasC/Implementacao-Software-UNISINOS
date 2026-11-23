@@ -2,7 +2,6 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { useAuth } from '../contexts/auth'
 import { linkPara, type Rota } from '../hooks/useRota'
 import { Icone, type NomeIcone } from './Icone'
-import { BotaoTema } from './Tema'
 
 const MENU: { rota: Rota; rotulo: string; icone: NomeIcone }[] = [
   { rota: 'inicio', rotulo: 'Início', icone: 'inicio' },
@@ -46,7 +45,6 @@ export function Layout({ rota, children }: { rota: Rota; children: ReactNode }) 
           </span>
           Gestão de Reservas
         </span>
-        <BotaoTema />
       </header>
 
       <div className="app__fundo" onClick={() => setMenuAberto(false)} aria-hidden="true" />
@@ -90,13 +88,10 @@ export function Layout({ rota, children }: { rota: Rota; children: ReactNode }) 
               </span>
             </div>
           )}
-          <div className="lateral__botoes">
-            <BotaoTema />
-            <button type="button" className="botao botao--fantasma botao--pequeno" onClick={sair}>
-              <Icone nome="sair" />
-              Sair
-            </button>
-          </div>
+          <button type="button" className="botao botao--fantasma botao--pequeno lateral__sair" onClick={sair}>
+            <Icone nome="sair" />
+            Sair
+          </button>
         </div>
       </aside>
 

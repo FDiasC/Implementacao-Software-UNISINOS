@@ -1,7 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { ErroFormulario } from '../components/Campo'
 import { Icone } from '../components/Icone'
-import { BotaoTema } from '../components/Tema'
 import { useAuth } from '../contexts/auth'
 import { mensagemDeErro, usuariosApi } from '../services/api'
 
@@ -39,10 +38,6 @@ export function Login() {
 
   return (
     <div className="acesso">
-      <div className="acesso__tema">
-        <BotaoTema />
-      </div>
-
       <section className="acesso__apresentacao" aria-hidden="true">
         <span className="marca marca--grande">
           <span className="marca__logo">
